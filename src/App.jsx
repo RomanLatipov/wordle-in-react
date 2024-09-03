@@ -5,15 +5,28 @@ import words from './wordlist.js';
 function App() {
   const [word, setWord] = useState(words[Math.floor(Math.random() * words.length)]);
   const [guesses, setGuesses] = useState(Array(6).fill(null));
+  const [currentGuess, setCurrentGuess] = useState('');
+
+  useEffect(() => {
+    function handleTpye(event) {
+      setCurrentGuess(currentGuess => currentGuess + event.key);
+    }
+    window.addEventListener('keydown', handleTpye);
+
+    // return () => window.removeEventListener('keydown', handleTpye)
+  }, [])
 
   return (<>
-    {
-      guesses.map(guess => {
-        return (
-          <Line guess={guess ?? ''}/>
-        )
-      })
-    }
+    <div className='board'>
+      {
+        guesses.map(guess => {
+          return (
+            <Line guess={guess ?? ''}/>
+          )
+        })
+      }
+      {currentGuess}
+    </div>
   </>)
 }
 function Line({guess}) {
