@@ -7,7 +7,7 @@ function App() {
   const [guesses, setGuesses] = useState(Array(6).fill(null));
   const [currentGuess, setCurrentGuess] = useState('');
   const [gameOver, setGameOver] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
+  const [isFinal, setIsFinal] = useState(false);
 
   useEffect(() => {
     function handleTpye(event) {
@@ -20,7 +20,6 @@ function App() {
         }
         else if (word === currentGuess) {
           setGameOver(true);
-          setIsCorrect(true)
           window.removeEventListener('keydown', handleTpye);
           console.log("Game over");
         }
@@ -28,6 +27,7 @@ function App() {
         // console.log(idx); when idx == -1 end the game
         guesses[idx] = currentGuess;
         setCurrentGuess('');
+        setIsFinal(true);
       }
       else if (event.key === 'Backspace') {
         setCurrentGuess(oldGuess => oldGuess.substring(0, oldGuess.length-1));
@@ -49,7 +49,7 @@ function App() {
         guesses.map((guess, i) => {
           const idx = guesses.indexOf(null);
           return (
-            <Line guess={i == idx ? currentGuess : guess ?? ''} word={word} isGameOver={gameOver}/>
+            <Line guess={i == idx ? currentGuess : guess ?? ''} word={word} isFinal={guess ? true : false}/>
           )
         })
       }
@@ -57,11 +57,23 @@ function App() {
     {currentGuess}
   </>)
 }
-function Line({guess, word, isGameOver}) {
+function Line({guess, word, isFinal}) {
   const tiles = [];
   for (let i=0; i<5; i++) {
-    const char = guess[i];
-    tiles.push(<div key={i} className='tiles' style={isGameOver && word == guess ? {background: 'green'} : {background: 'white'}}>{char}</div>)
+    const char = guess[i];    
+    let className = 'tiles';
+    if (isFinal) {
+      if (word[i] === char)
+        className = 'correct';
+      else if (word.includes(char))
+        className = 'close';
+      else
+        className = 'wrong';
+    }
+
+    // console.log(isFinal)
+    tiles.push(<div key={i} className={className}>{char}</div>)
+    // style={isFinal && isClose ? {background: 'green'} : isFinal && isIncluded ? {background: 'yellow'} : {background: 'grey'}}
   }
   return <div className='line'>{tiles}</div>
 }
