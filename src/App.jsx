@@ -7,7 +7,6 @@ function App() {
   const [guesses, setGuesses] = useState(Array(6).fill(null));
   const [currentGuess, setCurrentGuess] = useState('');
   const [gameOver, setGameOver] = useState(false);
-  const [isFinal, setIsFinal] = useState(false);
 
   useEffect(() => {
     function handleTpye(event) {
@@ -27,7 +26,6 @@ function App() {
         // console.log(idx); when idx == -1 end the game
         guesses[idx] = currentGuess;
         setCurrentGuess('');
-        setIsFinal(true);
       }
       else if (event.key === 'Backspace') {
         setCurrentGuess(oldGuess => oldGuess.substring(0, oldGuess.length-1));
@@ -54,7 +52,6 @@ function App() {
         })
       }
     </div>
-    {currentGuess}
   </>)
 }
 function Line({guess, word, isFinal}) {
@@ -70,8 +67,6 @@ function Line({guess, word, isFinal}) {
       else
         className = 'wrong';
     }
-
-    // console.log(isFinal)
     tiles.push(<div key={i} className={className}>{char}</div>)
     // style={isFinal && isClose ? {background: 'green'} : isFinal && isIncluded ? {background: 'yellow'} : {background: 'grey'}}
   }
