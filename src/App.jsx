@@ -20,10 +20,11 @@ function App() {
         else if (word === currentGuess) {
           setGameOver(true);
           window.removeEventListener('keydown', handleTpye);
-          console.log("Game over");
         }
         const idx = guesses.indexOf(null);
-        // console.log(idx); when idx == -1 end the game
+        console.log(idx);
+        // if (idx === 5)
+        //   setGameOver(true);
         guesses[idx] = currentGuess;
         setCurrentGuess('');
       }
@@ -31,14 +32,20 @@ function App() {
         setCurrentGuess(oldGuess => oldGuess.substring(0, oldGuess.length-1));
       }
       else if (currentGuess.length < 5) {
-        setCurrentGuess(oldGuess => oldGuess + event.key);
+        const isLetter = event.key.match(/^[a-z]{1}$/)
+        if (isLetter)
+          setCurrentGuess(oldGuess => oldGuess + event.key);
       }
-      // setCurrentGuess(currentGuess => currentGuess + event.key);
     }
     window.addEventListener('keydown', handleTpye);
 
     return () => window.removeEventListener('keydown', handleTpye);
   }, [currentGuess])
+  
+  function test() {
+    if(gameOver && guesses.indexOf(null) === -1)
+      alert("Game over")
+  }
 
   return (<>
     {word}
@@ -51,6 +58,7 @@ function App() {
           )
         })
       }
+      {/* {gameOver ? test() : ""} */}
     </div>
   </>)
 }
@@ -68,10 +76,8 @@ function Line({guess, word, isFinal}) {
         className = 'wrong';
     }
     tiles.push(<div key={i} className={className}>{char}</div>)
-    // style={isFinal && isClose ? {background: 'green'} : isFinal && isIncluded ? {background: 'yellow'} : {background: 'grey'}}
   }
   return <div className='line'>{tiles}</div>
 }
-//
 export default App
 
